@@ -6,52 +6,47 @@ import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
 
-import ca.polymtl.inf8480.tp1.shared.ServerInterface;
+import ca.polymtl.inf8480.tp1.shared.AuthInterface;
 
-public class Server implements ServerInterface {
+public class AuthServer implements AuthInterface {
 
 	public static void main(String[] args) {
 		Server server = new Server();
 		server.run();
 	}
 
-	public Server() {
+	public AuthServer() {
 		super();
 	}
 
+	/*
+	 * Permet de mettre en place le lien entre le Serveur d'Authentification et le Registre RMI permettant l'accès des méthodes partagées au Client et au Serveur.
+	 * La méthode prend en compte la création du Skeleton (relai du coté serveur) et l'enregistrement des méthodes dans le Registre RMI.
+	 */
 	private void run() {
 		if (System.getSecurityManager() == null) {
 			System.setSecurityManager(new SecurityManager());
 		}
-
 		try {
-			ServerInterface stub = (ServerInterface) UnicastRemoteObject
-					.exportObject(this, 0);
-
+			AuthInterface skeleton = (AuthInterface) UnicastRemoteObject.exportObject(this, 0);
 			Registry registry = LocateRegistry.getRegistry();
-			registry.rebind("server", stub);
-			System.out.println("Server ready.");
+			registry.rebind("authserver", skeleton);
+			System.out.println("Server d'authentification en marche.");
 		} catch (ConnectException e) {
-			System.err
-					.println("Impossible de se connecter au registre RMI. Est-ce que rmiregistry est lancé ?");
+			System.err.println("Impossible de se connecter au registre RMI. Est-ce que rmiregistry est lancé ?");
 			System.err.println();
 			System.err.println("Erreur: " + e.getMessage());
 		} catch (Exception e) {
 			System.err.println("Erreur: " + e.getMessage());
 		}
 	}
-
-	/*
-	 * Méthode accessible par RMI. Additionne les deux nombres passés en
-	 * paramètre.
-	 */
-	@Override
-	public int execute(int a, int b) throws RemoteException {
-		return a + b;
+	
+	public String newUser(String login, String password) {
+		
 	}
 	
-	public String newUser(String login, String password) 
 	
-	
-	public boolean verify(String login, String password)
+	public boolean verify(String login, String password) {
+		
+	}
 }
