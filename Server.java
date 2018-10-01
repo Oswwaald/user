@@ -131,17 +131,27 @@ public class Server implements ServerInterface {
 		return fileList;
 	}
 	
+    /*
+     * Permet au Client de pouvoir récupérer (synchroniser) tous les fichiers présents sur le serveur.
+     * On vérifie la légitimité du client.
+     * Si l'existance du dossier avec plus d'un fichier est vérifiée, on applique la méthode get pour récupérer le contenu.
+     */
 	public void syncLocalDirectory(String login, String password)
-    {
-		File repertory = new File("fichiers/");
-		String files[] = repertory.list();
-		if ((files != null) && (files.length > 0)) 
+   	{
+		if (verify(login, password))
 		{
-			for (int i = 0; i < files.length; i++) 
-			{	    
-				get(files[i], null, login, password);
+			File repertory = new File("fichiers/");
+			String files[] = repertory.list();
+			if ((files != null) && (files.length > 0)) 
+			{
+				for (int i = 0; i < files.length; i++) 
+				{	    
+					get(files[i], null, login, password);
+				}
 			}
 		}
+		else
+			return "Mauvaises informations de connexion";
 	}
 }
   
