@@ -9,7 +9,7 @@ import java.rmi.RemoteException;
  */
 public interface ServerInterface extends Remote {
 	void create(String fileName, String login, String password) throws RemoteException;
-	byte[] get(String fileName, String checksumClient, String login, String password) throws RemoteException;
+	String get(String fileName, String checksumClient, String login, String password) throws RemoteException;
 	void push(String fileName, byte[] content, String login, String password) throws RemoteException;
 	void lock(String fileName, String checksumClient, String login, String password) throws RemoteException;
 	ArrayList<String> list(String login, String password) throws RemoteException;
