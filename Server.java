@@ -55,6 +55,25 @@ public class Server implements ServerInterface {
 	}
 	
 	/*
+	 * Permet de mettre en place le lien entre le Serveur et le Registre RMI permettant l'accès des méthodes partagées du Serveur d'authentification.
+	 * La méthode prend en compte la création du Stub (relai du coté client [ici Server est le client de AuthServer]) et l'appel de la liste des méthodes dans le Registre RMI.
+	 */	
+	private AuthInterface loadAuthStub(String hostname) {
+		AuthInterface stub = null;
+		try {
+			Registry registry = LocateRegistry.getRegistry(hostname);
+			stub = (AuthInterface) registry.lookup("authserver");
+		} catch (NotBoundException e) {
+			System.out.println("Erreur: Le nom '" + e.getMessage() + "' n'est pas défini dans le registre.");
+		} catch (AccessException e) {
+			System.out.println("Erreur: " + e.getMessage());
+		} catch (RemoteException e) {
+			System.out.println("Erreur: " + e.getMessage());
+		}
+		return stub;
+	}
+	
+	/*
 	 * Permet de créer un fichier vide sur le serveur.
 	 * On vérifie la légitimité du client.
 	 * La méthode prend en charge le fait que le nom de fichier est déjà utilisé.
@@ -206,5 +225,12 @@ public class Server implements ServerInterface {
 		}
 		else
 			System.out.println("Mauvaises informations de connexion.");
+	}
+	
+	/*
+	 * Permet de vérifier les identifiants de connexion avec le serveur d'authentification.
+	 */
+	private void verify(String login, String password) {
+		
 	}
 }
