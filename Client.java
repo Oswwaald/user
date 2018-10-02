@@ -1,11 +1,13 @@
 package ca.polymtl.inf8480.tp1.client;
 
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.rmi.AccessException;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
-import java.util.ArrayList;
 
 import ca.polymtl.inf8480.tp1.shared.ServerInterface;
 import ca.polymtl.inf8480.tp1.shared.AuthInterface;
@@ -127,7 +129,7 @@ public class Client {
 		 }
 		 catch (RemoteException e) {
             		System.out.println("Erreur: " + e.getMessage());
-        	}
+		 }
 	 }
 	 
 	/*
@@ -137,13 +139,14 @@ public class Client {
 	 private void create(String fileName, String login, String password) {
 		 try
 		 {
-		 	System.out.println("Le client a lancé la requête.");
+			System.out.println("Le client a lancé la requête.");
 		 	localServerStub.create(fileName, login, password);
 		 	System.out.println("Le Serveur a fini de transmettre la réponse");
+		 } catch (RemoteException e) {
+			 System.out.println("Erreur: " + e.getMessage());
+		 } catch (IOException e) {
+			 System.out.println("Erreur: " + e.getMessage());			 
 		 }
-		 catch (RemoteException e) {
-            		System.out.println("Erreur: " + e.getMessage());
-        	 }
 	 }
 	 
 	/* 
@@ -175,6 +178,8 @@ public class Client {
 				 }
 		 }catch (RemoteException e) {
             		System.out.println("Erreur: " + e.getMessage());
+		 } catch (IOException e) {
+			 System.out.println("Erreur: " + e.getMessage());			 
 		 }
 	 }
 	
@@ -191,7 +196,9 @@ public class Client {
 		 }
 		 catch (RemoteException e) {
             	 System.out.println("Erreur: " + e.getMessage());
-        	 }
+		 } catch (IOException e) {
+			 System.out.println("Erreur: " + e.getMessage());			 
+		 }
 	 }
 	 
 	 /*
@@ -207,25 +214,27 @@ public class Client {
 		 }
 		 catch (RemoteException e) {
             	 System.out.println("Erreur: " + e.getMessage());
-         	 }
+		 } catch (IOException e) {
+			 System.out.println("Erreur: " + e.getMessage());			 
+		 }
 	 }
 	 
 	/*
 	 * Lancement de la requête list du Client avec le Serveur de fichiers.
 	 * On récupère les états de la requête à titre d'informations sur le suivi de la demande (Optionnel).
 	 */
-	 private ArrayList<String> list(String login, String password) {
-		 ArrayList<String> files = null;
+	 private void list(String login, String password) {
 		 try
 		 {
 		 	System.out.println("Le client a lancé la requête.");
-		 	files = localServerStub.list(login, password);
+		 	localServerStub.list(login, password);
 		 	System.out.println("Le Serveur a fini de transmettre la réponse");
 		 }
 		 catch (RemoteException e) {
             	 System.out.println("Erreur: " + e.getMessage());
-        	 }
-        	 return files;
+		 } catch (IOException e) {
+			 System.out.println("Erreur: " + e.getMessage());			 
+		 }
 	 }
 
 	/*
@@ -241,6 +250,8 @@ public class Client {
 		 }
 		 catch (RemoteException e) {
             	 System.out.println("Erreur: " + e.getMessage());
-        	 }
+		 } catch (IOException e) {
+			 System.out.println("Erreur: " + e.getMessage());			 
+		 }
 	 }
 }
