@@ -149,19 +149,6 @@ public class Server implements ServerInterface {
 			System.out.println("Mauvaises informations de connexion.");
 		return null;
     }
-    
-	public static String loadFile(File file) {
-	    try {
-	       out.flush();
-	       out.close();
-	       in.close();
-	       return out.toString();
-	    }
-	    catch (IOException ie)
-	    {
-	         ie.printStackTrace(); 
-	    }
-	}
 	
 	/*
 	 * Permet au Client de mettre à jour un fichier sur le serveur en envoyant directement le contenu au Serveur.
