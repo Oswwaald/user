@@ -1,5 +1,7 @@
 package ca.polymtl.inf8480.tp1.server;
 
+import java.rmi.AccessException;
+import java.rmi.NotBoundException;
 import java.rmi.ConnectException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
@@ -9,14 +11,21 @@ import java.rmi.server.UnicastRemoteObject;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.xml.bind.DatatypeConverter;
+
+import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
-
-import org.apache.commons.io.IOUtils;
+import java.io.IOException;
+import java.io.StringWriter;
+import java.security.*;
 
 import ca.polymtl.inf8480.tp1.shared.ServerInterface;
+import ca.polymtl.inf8480.tp1.shared.AuthInterface;
 
 public class Server implements ServerInterface {
 
@@ -80,7 +89,7 @@ public class Server implements ServerInterface {
 	 */
 	public void create(String fileName, String login, String password) {
 		if (verify(login, password)) {
-			String filePath = "fichiers/" + fileName;
+			File filePath = new File("fichiers/" + fileName);
 			if (filePath.exists() && !filePath.isDirectory()) {
 				System.out.println("Le fichier" + fileName + "existe déjà");
 			}
@@ -106,17 +115,31 @@ public class Server implements ServerInterface {
 	 */
 	public String get(String fileName, String checksumClient, String login, String password) {
 		if (verify(login, password)) {
-			String filePath = "fichiers/" + fileName;
-			if (filePath.exists() && !filePath.isDirectory()) {		
-				File fileToGet = new File(filePath);
-				FileInputStream fis = new FileInputStream(fileToGet);
-				String checksumServer = org.apache.commons.codec.digest.DigestUtils.md5Hex(fis);
-				if (checksumClient == null || checksumClient != checksumServer) {
-					String contenuFile = IOUtils.toString(fis).trim();
-					return contenuFile
+			File fileToGet = new File("fichiers/" + fileName);
+			if (fileToGet.exists()) {
+				try {
+					BufferedInputStream ajout = new BufferedInputStream(new FileInputStream(fileToGet));
+					StringWriter sortie = new StringWriter();
+					int pointeur;
+					while ((pointeur=ajout.read()) != -1)
+						sortie.write(pointeur);
+					sortie.flush();
+					sortie.close();
+					ajout.close();
+					MessageDigest md = MessageDigest.getInstance("MD5");
+					md.update(password.getBytes());
+					byte[] digest = md.digest();
+					String checksumServer = DatatypeConverter.printHexBinary(digest).toUpperCase();;
+					if (checksumClient == null || checksumClient != checksumServer) {
+						return sortie.toString();	
+					}
+					else
+						System.out.println("Le fichier " + fileName + " est déjà à jour");
+				}catch (IOException e) {
+					System.out.println("Erreur: " + e.getMessage());
+				}catch (NoSuchAlgorithmException e) {
+					System.out.println("Erreur: " + e.getMessage());
 				}
-				else(checksumClient == checksumServer)
-					System.out.println("Le fichier " + fileName + " est déjà à jour");
 			}
 			else {
 				System.out.println("Aucun fichier " + fileName + " sur le serveur");
@@ -124,8 +147,22 @@ public class Server implements ServerInterface {
 		}
 		else
 			System.out.println("Mauvaises informations de connexion.");
+		return null;
     }
     
+	public static String loadFile(File file) {
+	    try {
+	       out.flush();
+	       out.close();
+	       in.close();
+	       return out.toString();
+	    }
+	    catch (IOException ie)
+	    {
+	         ie.printStackTrace(); 
+	    }
+	}
+	
 	/*
 	 * Permet au Client de mettre à jour un fichier sur le serveur en envoyant directement le contenu au Serveur.
 	 * On vérifie la légitimité du client.
@@ -150,7 +187,7 @@ public class Server implements ServerInterface {
     		else if (!lockOwner.equals(login)) {
     			System.out.println("Ce fichier est vérouillé par l'utilisateur " + lockOwner);
     		}
-    		else if (lockerOwner == null) {
+    		else {
     			System.out.println("Veuillez verrouiller le fichier avant de le pousser");
     		}
 		}
@@ -170,7 +207,7 @@ public class Server implements ServerInterface {
 			if (filePath.exists() && !filePath.isDirectory()) {	
 				String fileLockOwner = (String)fileLocks.putIfAbsent(fileName, login);
 				if (fileLockOwner == null) {
-					get(fileName, checksumClient, String login, String password);
+					get(fileName, checksumClient, login, password);
 				}
 				System.out.println("L'utilisateur " + fileLockOwner + "détient le verrou pour le fichier " + fileName);
 			}
@@ -213,13 +250,13 @@ public class Server implements ServerInterface {
      * On vérifie la légitimité du client.
      * Si l'existance du dossier avec plus d'un fichier est vérifiée, on applique la méthode get pour récupérer le contenu.
      */
-	public void syncLocalDirectory(String login, String password) {
+	public String syncLocalDirectory(String login, String password) {
 		if (verify(login, password)) {
 			File repertory = new File("fichiers/");
 			String files[] = repertory.list();
 			if ((files != null) && (files.length > 0)) {
 				for (int i = 0; i < files.length; i++) {	    
-					get(files[i], null, login, password);
+					return get(files[i], null, login, password);
 				}
 			}
 		}
@@ -230,7 +267,9 @@ public class Server implements ServerInterface {
 	/*
 	 * Permet de vérifier les identifiants de connexion avec le serveur d'authentification.
 	 */
-	private void verify(String login, String password) {
+	private boolean verify(String login, String password) {
 		
 	}
+	
+
 }
