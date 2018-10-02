@@ -40,8 +40,8 @@ public class Server implements ServerInterface {
 	}
 
 	/*
-	 * Permet de mettre en place le lien entre le Serveur et le Registre RMI permettant l'accès des méthodes partagées au Client.
-	 * La méthode prend en compte la création du Skeleton (relai du coté serveur) et l'enregistrement des méthodes dans le Registre RMI.
+	 * Permet de mettre en place le lien entre le Serveur et le Registre RMI permettant l acces des methodes partagees au Client.
+	 * La methode prend en compte la creation du Skeleton (relai du cote serveur) et l enregistrement des methodes dans le Registre RMI.
 	 */
 	private void run() {
 		if (System.getSecurityManager() == null) {
@@ -62,8 +62,8 @@ public class Server implements ServerInterface {
 	}
 	
 	/*
-	 * Permet de mettre en place le lien entre le Serveur et le Registre RMI permettant l'accès des méthodes partagées du Serveur d'authentification.
-	 * La méthode prend en compte la création du Stub (relai du coté client [ici Server est le client de AuthServer]) et l'appel de la liste des méthodes dans le Registre RMI.
+	 * Permet de mettre en place le lien entre le Serveur et le Registre RMI permettant l'acces des methodes partagees du Serveur d'authentification.
+	 * La methode prend en compte la creation du Stub (relai du cote client [ici Server est le client de AuthServer]) et l'appel de la liste des méthodes dans le Registre RMI.
 	 */	
 	private AuthInterface loadAuthStub(String hostname) {
 		AuthInterface stub = null;
@@ -71,7 +71,7 @@ public class Server implements ServerInterface {
 			Registry registry = LocateRegistry.getRegistry(hostname);
 			stub = (AuthInterface) registry.lookup("authserver");
 		} catch (NotBoundException e) {
-			System.out.println("Erreur: Le nom '" + e.getMessage() + "' n'est pas défini dans le registre.");
+			System.out.println("Erreur: Le nom '" + e.getMessage() + "' n'est pas defini dans le registre.");
 		} catch (AccessException e) {
 			System.out.println("Erreur: " + e.getMessage());
 		} catch (RemoteException e) {
@@ -81,20 +81,20 @@ public class Server implements ServerInterface {
 	}
 	
 	/*
-	 * Permet de créer un fichier vide sur le serveur.
-	 * On vérifie la légitimité du client.
-	 * La méthode prend en charge le fait que le nom de fichier est déjà utilisé.
+	 * Permet de creer un fichier vide sur le serveur.
+	 * On verifie la legitimite du client.
+	 * La methode prend en charge le fait que le nom de fichier est dejà utilise.
 	 */
 	public void create(String fileName, String login, String password) throws IOException {
 		if (verify(login, password)) {
 			File filePath = new File("fichiers/" + fileName);
 			if (filePath.exists() && !filePath.isDirectory()) {
-				System.out.println("Le fichier" + fileName + "existe déjà");
+				System.out.println("Le fichier" + fileName + "existe deja");
 			}
 			else {
 				try {
 					filePath.createNewFile();
-					System.out.println("Le fichier " + fileName + " a été créé avec succès");
+					System.out.println("Le fichier " + fileName + " a ete cree avec succès");
 				} catch (Exception e) {
 					System.err.println("Erreur: " + e.getMessage());
 				}
@@ -105,10 +105,10 @@ public class Server implements ServerInterface {
 	}
 	
 	/*
-	 * Permet de récupérer le contenu du fichier partagé sur le serveur en fonction de sa version (par le checkum).
-	 * On vérifie la légitimité du client.
-	 * La méthode prend en considération l'absence de fichier.
-	 * La méthode prend en considération le cas où le fichier sur le serveur possède le même checksum que le fichier du client.
+	 * Permet de recuperer le contenu du fichier partage sur le serveur en fonction de sa version (par le checkum).
+	 * On verifie la legitimite du client.
+	 * La methode prend en consideration l'absence de fichier.
+	 * La methode prend en consideration le cas où le fichier sur le serveur possède le même checksum que le fichier du client.
 	 */
 	public String get(String fileName, String checksumClient, String login, String password) throws IOException {
 		if (verify(login, password)) {
@@ -149,9 +149,9 @@ public class Server implements ServerInterface {
 	
 	/*
 	 * Permet au Client de mettre à jour un fichier sur le serveur en envoyant directement le contenu au Serveur.
-	 * On vérifie la légitimité du client.
-	 * La méthode prend en compte le fait que le Client ne soit pas le propriétaire d'écriture du fichier.
-	 * La méthode prend en compte le fait que le fichier ne soit pas préalablement "locké" par le Client.
+	 * On verifie la legitimite du client.
+	 * La methode prend en compte le fait que le Client ne soit pas le proprietaire d ecriture du fichier.
+	 * La methode prend en compte le fait que le fichier ne soit pas prealablement "locke" par le Client.
 	 */
     public void push(String fileName, String content, String login, String password) throws IOException {
     	if (verify(login, password)) {
@@ -234,8 +234,7 @@ public class Server implements ServerInterface {
      */
 	public String[] syncLocalDirectory(String login, String password) throws IOException {
 		String insertion[] = null; 
-		if (verify(login, password)) {
-			
+		if (verify(login, password)) {			
 			File repertory = new File("fichiers/");
 			String files[] = repertory.list();
 			if ((files != null) && (files.length > 0)) {
