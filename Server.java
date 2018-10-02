@@ -210,7 +210,7 @@ public class Server implements ServerInterface {
      * La liste comporte un identifiant de fichier, le nom de fichier et le nom du propriétaire (si applicable).
      */
     public String[] list(String login, String password) throws RemoteException {
-	String[] fileList = null;
+	ArrayList<String> fileList = null;
     	if (verify(login, password)) {
     		try {
 
@@ -228,6 +228,7 @@ public class Server implements ServerInterface {
     	}
     	else
     		System.out.println("Mauvaises informations de connexion.");
+	String[] fileArray = fileList.toArray(new String[0]);    
     	return fileList;
     }
 	
