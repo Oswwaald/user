@@ -7,7 +7,6 @@ import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -86,7 +85,7 @@ public class Server implements ServerInterface {
 	 * On vérifie la légitimité du client.
 	 * La méthode prend en charge le fait que le nom de fichier est déjà utilisé.
 	 */
-	public void create(String fileName, String login, String password) throws RemoteException {
+	public void create(String fileName, String login, String password) throws IOException {
 		if (verify(login, password)) {
 			File filePath = new File("fichiers/" + fileName);
 			if (filePath.exists() && !filePath.isDirectory()) {
@@ -103,7 +102,7 @@ public class Server implements ServerInterface {
 		}
 		else
 			System.out.println("Mauvaises informations de connexion.");
-	} 
+	}
 	
 	/*
 	 * Permet de récupérer le contenu du fichier partagé sur le serveur en fonction de sa version (par le checkum).
@@ -111,7 +110,7 @@ public class Server implements ServerInterface {
 	 * La méthode prend en considération l'absence de fichier.
 	 * La méthode prend en considération le cas où le fichier sur le serveur possède le même checksum que le fichier du client.
 	 */
-	public String get(String fileName, String checksumClient, String login, String password) throws RemoteException {
+	public String get(String fileName, String checksumClient, String login, String password) throws IOException {
 		if (verify(login, password)) {
 			File fileToGet = new File("fichiers/" + fileName);
 			if (fileToGet.exists()) {
@@ -154,7 +153,7 @@ public class Server implements ServerInterface {
 	 * La méthode prend en compte le fait que le Client ne soit pas le propriétaire d'écriture du fichier.
 	 * La méthode prend en compte le fait que le fichier ne soit pas préalablement "locké" par le Client.
 	 */
-    public void push(String fileName, String content, String login, String password) throws RemoteException {
+    public void push(String fileName, String content, String login, String password) throws IOException {
     	if (verify(login, password)) {
     		String lockOwner = (String)fileLocks.get(fileName);
     		if (lockOwner.equals(login)) {
@@ -186,7 +185,7 @@ public class Server implements ServerInterface {
      * A la suite du vérouillage, le client obtient l'information du propriétaire.
      * La méthode prend en considération l'absence de fichier.
      */
-    public void lock(String fileName, String checksumClient, String login, String password) throws RemoteException {
+    public void lock(String fileName, String checksumClient, String login, String password) throws IOException {
     	if (verify(login, password)) {
 			File filePath = new File(fileName);
 			if (filePath.exists() && !filePath.isDirectory()) {	
@@ -209,36 +208,32 @@ public class Server implements ServerInterface {
      * On vérifie la légitimité du client.
      * La liste comporte un identifiant de fichier, le nom de fichier et le nom du propriétaire (si applicable).
      */
-    public String[] list(String login, String password) throws RemoteException {
-	ArrayList<String> fileList = null;
+    public void list(String login, String password) throws IOException {
     	if (verify(login, password)) {
     		try {
-
     			File repertory = new File("fichiers/");
     			String files[] = repertory.list();
     			if ((files != null) && (files.length > 0)) {
     				for (int i = 0; i < files.length; i++) {	    
     					String fileLockOwner = (String)fileLocks.get(files[i]);
-    					fileList.add(i + ": " + files[i] + " " + fileLockOwner);
+    					System.out.println(i + ": " + files[i] + " " + fileLockOwner);
     				}	
     			} 
     		} catch (Exception e) {
-    			System.err.println("Erreur: " + e.getMessage());
+    				System.err.println("Erreur: " + e.getMessage());
     		}
-    	}
-    	else
-    		System.out.println("Mauvaises informations de connexion.");
-	String[] fileArray = fileList.toArray(new String[0]);    
-    	return fileList;
-    }
+		}
+		else
+			System.out.println("Mauvaises informations de connexion.");
+	}
 	
     /*
      * Permet au Client de pouvoir récupérer (synchroniser) tous les fichiers présents sur le serveur.
      * On vérifie la légitimité du client.
      * Si l'existance du dossier avec plus d'un fichier est vérifiée, on applique la méthode get pour récupérer le contenu.
      */
-	public String[] syncLocalDirectory(String login, String password) throws RemoteException {
-		String insertion[];
+	public String[] syncLocalDirectory(String login, String password) throws IOException {
+		String insertion[] = null; 
 		if (verify(login, password)) {
 			
 			File repertory = new File("fichiers/");
@@ -257,9 +252,7 @@ public class Server implements ServerInterface {
 	/*
 	 * Lancement de la requête verify du Serveur de fichier avec le Serveur d'authentification .
 	 */
-	private boolean verify(String login, String password) throws RemoteException {
+	private boolean verify(String login, String password) throws IOException {
 		return distantServerStub.verify(login, password);
 	}
 }
-  
-
