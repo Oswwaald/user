@@ -15,19 +15,15 @@ public class Client {
 	/*
 	 * Ebauche d'idée permettant de transmettre les bons arguments aux bonnes fonctions du Client ?! A développer...
 	 */
-	private int i = 1;
+	private String[] arguments = new String[4];
 	private String methodeExec = null;
-	private String argument1 = null;
-	private String argument2 = null;
-	private String argument3 = null;
-	private String argument4 = null;
 	
 	public void main(String[] args) {
-		
+		int i = 1;
 		if (args.length > 0) {
 			methodeExec = args[0];
 			while (i < args.length ) {
-				"argument"+String.valueof(i) = arg[i]; 							//Pas sur du tout que ça compile ça...
+				arguments[i - 1] = args[i]; 							//Pas sur du tout que ça compile ça...
 				i++;
 			}
 		}
@@ -36,7 +32,8 @@ public class Client {
 	}
 
 	private ServerInterface localServerStub = null;
-	private AuthInterface distantServerStub = null;
+	private ServerInterface distantServerStub = null;
+	private AuthInterface distantAuthStub = null;
 
 	/*
 	 * Permet d'assurer le paramétrage de la connexion avec les différents serveurs.
@@ -49,7 +46,7 @@ public class Client {
 			System.setSecurityManager(new SecurityManager());
 		}
 		localServerStub = loadServerStub("127.0.0.1");
-		distantServerStub = loadAuthStub("132.207.12.243");
+		distantServerStub = loadServerStub("132.207.12.243");
 	}
 
 	/*
@@ -57,25 +54,25 @@ public class Client {
 	 */
 	private void run() {
 		if (methodeExec == "newUser") {
-			newUser(argument1, argument2);
+			newUser(arguments[0], arguments[1]);
 		}
 		else if (methodeExec == "create") {
-			create(argument1, argument2, argument3);
+			create(arguments[0], arguments[1], arguments[2]);
 		}
 		else if (methodeExec == "get") {
-			get(argument1, argument2, argument3, argument4);
+			get(arguments[0], arguments[1], arguments[2], arguments[3]);
 		}
 		else if (methodeExec == "push") {
-			push(argument1, argument2, argument3, argument4);
+			push(arguments[0], arguments[1], arguments[2], arguments[3]);
 		}
 		else if (methodeExec == "lock") {
-			lock(argument1, argument2, argument3, argument4);
+			lock(arguments[0], arguments[1], arguments[2], arguments[3]);
 		}
 		else if (methodeExec == "list") {
-			list(argument1, argument2);
+			list(arguments[0], arguments[1]);
 		}
 		else if (methodeExec == "syncLocalDirectory") {
-			syncLocalDirectory(argument1, argument2);
+			syncLocalDirectory(arguments[0], arguments[1]);
 		}
 		else 
 			System.out.println("La méthode " + methodeExec + " n'existe pas pour le Client...");
@@ -123,62 +120,108 @@ public class Client {
 	 * Lancement de la requête newUser du Client avec le Serveur d'authentification.
 	 */
 	 private void newUser(String login, String password) {
+		 try
+		 {
 		 System.out.println("Le client a bien lancé la requête.");
 		 distantAuthStub.newUser(login, password);
 		 System.out.println("Le Serveur a fini de transmettre la réponse");
+		 }
+		 catch (RemoteException e) {
+            System.out.println("Erreur: " + e.getMessage());
+        }
 	 }
 	 
 	/*
-	 * Lancement de la requête newUser du Client avec le Serveur d'authentification.
+	 * Lancement de la requête create du Client avec le Serveur d'authentification.
 	 */	 
 	 private void create(String fileName, String login, String password) {
+		 try
+		 {
 		 System.out.println("Le client a lancé la requête.");
 		 distantServerStub.create(fileName, login, password);
 		 System.out.println("Le Serveur a fini de transmettre la réponse");
+		 }
+		 catch (RemoteException e) {
+            System.out.println("Erreur: " + e.getMessage());
+        }
 	 }
 	 
 	/* 
-	 * Lancement de la requête newUser du Client avec le Serveur d'authentification.
+	 * Lancement de la requête get du Client avec le Serveur d'authentification.
 	 */	 
 	 private String get(String fileName, String checksumClient, String login, String password) {
+		 String file = null;
+		 try
+		 {
 		 System.out.println("Le client a lancé la requête.");
-		 distantServerStub.get(fileName, checksumClient, login, password);
+		 file = distantServerStub.get(fileName, checksumClient, login, password);
 		 System.out.println("Le Serveur a fini de transmettre la réponse");
+		 }
+		 catch (RemoteException e) {
+            System.out.println("Erreur: " + e.getMessage());
+        }
+        return file;
 	 }
 	
 	/*
-	 * Lancement de la requête newUser du Client avec le Serveur d'authentification.
+	 * Lancement de la requête push du Client avec le Serveur d'authentification.
 	 */
 	 private void push(String fileName, String content, String login, String password) {
+		 try
+		 {
 		 System.out.println("Le client a lancé la requête.");
-		 distantServerStub.push(filename, content, login, password);
+		 distantServerStub.push(fileName, content, login, password);
 		 System.out.println("Le Serveur a fini de transmettre la réponse");
+		 }
+		 catch (RemoteException e) {
+            System.out.println("Erreur: " + e.getMessage());
+        }
 	 }
 	 
 	/*
-	 * Lancement de la requête newUser du Client avec le Serveur d'authentification.
+	 * Lancement de la requête lock du Client avec le Serveur d'authentification.
 	 */
 	 private void lock(String fileName, String checksumClient, String login, String password) {
+		 try
+		 {
 		 System.out.println("Le client a lancé la requête.");
-		 distantServerStub.lock(filename, checksumClient, login, password);
+		 distantServerStub.lock(fileName, checksumClient, login, password);
 		 System.out.println("Le Serveur a fini de transmettre la réponse");
+		 }
+		 catch (RemoteException e) {
+            System.out.println("Erreur: " + e.getMessage());
+        }
 	 }
 	 
 	/*
-	 * Lancement de la requête newUser du Client avec le Serveur d'authentification.
+	 * Lancement de la requête list du Client avec le Serveur d'authentification.
 	 */
 	 private ArrayList<String> list(String login, String password) {
+		 ArrayList<String> files = null;
+		 try
+		 {
 		 System.out.println("Le client a lancé la requête.");
-		 return distantServerStub.list(login, password);
+		 files = distantServerStub.list(login, password);
 		 System.out.println("Le Serveur a fini de transmettre la réponse");
+		 }
+		 catch (RemoteException e) {
+            System.out.println("Erreur: " + e.getMessage());
+        }
+        return files;
 	 }
 
 	/*
-	 * Lancement de la requête newUser du Client avec le Serveur d'authentification.
+	 * Lancement de la requête syncLocalDirectory du Client avec le Serveur d'authentification.
 	 */
 	 private void syncLocalDirectory(String login, String password) {
+		 try
+		 {
 		 System.out.println("Le client a lancé la requête.");
 		 distantServerStub.syncLocalDirectory(login, password);
 		 System.out.println("Le Serveur a fini de transmettre la réponse");
+		 }
+		 catch (RemoteException e) {
+            System.out.println("Erreur: " + e.getMessage());
+        }
 	 }
 }
