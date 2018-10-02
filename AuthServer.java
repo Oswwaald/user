@@ -81,22 +81,22 @@ public class AuthServer implements AuthInterface {
 	public boolean verify(String login, String password) {
 		BufferedReader br = new BufferedReader (new FileReader (connexionFile));
 		String line;
+		bool loginAccepted = false;
 		while( (line = br.readLine() ) != null) 
 		{		
 		    String[] parts = String.split(" ");
 		    if (parts[0] == login){
 			    if (parts[1] == password){    
-			    	return true;
+			    	loginAccepted = true;
 		        }
 			    else {      
-			    	System.err.println("Mauvais mot de passe");
-				return false;
+			    	System.err.println("Mauvais mot de passe");;
 			    }
 		     }
 		     else {
 		    	 System.err.println("L'utilisateur n'existe pas");
-		    	 return false;
 		     }
-		 }		
+		 }
+		return loginAccepted;
 	}
 }
