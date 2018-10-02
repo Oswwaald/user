@@ -7,7 +7,7 @@ import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
-
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -30,6 +30,7 @@ import ca.polymtl.inf8480.tp1.shared.AuthInterface;
 public class Server implements ServerInterface {
 
 	Map<String,String> fileLocks = new HashMap();
+	private AuthInterface distantServerStub = null;
 	
 	public static void main(String[] args) {
 		Server server = new Server();
@@ -39,6 +40,7 @@ public class Server implements ServerInterface {
 
 	public Server() {
 		super();
+		distantServerStub = loadAuthStub("132.207.12.243");
 	}
 
 	/*
@@ -95,8 +97,7 @@ public class Server implements ServerInterface {
 			}
 			else {
 				try {
-					File newFile = new File(filePath);
-					newFile.createNewFile();
+					filePath.createNewFile();
 					System.out.println("Le fichier " + fileName + " a été créé avec succès");
 				} catch (Exception e) {
 					System.err.println("Erreur: " + e.getMessage());
@@ -190,7 +191,7 @@ public class Server implements ServerInterface {
      */
     public void lock(String fileName, String checksumClient, String login, String password) {
     	if (verify(login, password)) {
-			String filePath = "fichiers/" + fileName;
+			File filePath = new File("fichiers/" + fileName);
 			if (filePath.exists() && !filePath.isDirectory()) {	
 				String fileLockOwner = (String)fileLocks.putIfAbsent(fileName, login);
 				if (fileLockOwner == null) {
@@ -214,22 +215,23 @@ public class Server implements ServerInterface {
     public ArrayList<String> list(String login, String password) {
     	if (verify(login, password)) {
     		try {
-    			ArrayList<String> fileList = new ArrayList();
+    			ArrayList<String> fileList = new ArrayList<String>();
     			File repertory = new File("fichiers/");
     			String files[] = repertory.list();
     			if ((files != null) && (files.length > 0)) {
     				for (int i = 0; i < files.length; i++) {	    
-    					String fileLockOwner = (String)fileLocks.get(file);
+    					String fileLockOwner = (String)fileLocks.get(files[i]);
     					fileList.add(i + ": " + files[i] + " " + fileLockOwner);
     				}	
     			} 
+    			return fileList;
     		} catch (Exception e) {
     				System.err.println("Erreur: " + e.getMessage());
     		}
-    		return fileList;
 		}
 		else
 			System.out.println("Mauvaises informations de connexion.");
+    	return null;
 	}
 	
     /*
@@ -249,6 +251,7 @@ public class Server implements ServerInterface {
 		}
 		else
 			System.out.println("Mauvaises informations de connexion.");
+		return null;
 	}
 	
 	/*
@@ -257,6 +260,4 @@ public class Server implements ServerInterface {
 	private boolean verify(String login, String password) {
 		
 	}
-	
-
 }
