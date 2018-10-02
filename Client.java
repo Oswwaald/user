@@ -150,18 +150,32 @@ public class Client {
 	 * Lancement de la requête get du Client avec le Serveur de fichiers.
 	 * On récupère les états de la requête à titre d'informations sur le suivi de la demande (Optionnel).
 	 */	 
-	 private String get(String fileName, String checksumClient, String login, String password) {
+	 private void get(String fileName, String checksumClient, String login, String password) {
 		 String file = null;
 		 try
 		 {
-		 	System.out.println("Le client a lancé la requête.");
-		 	file = localServerStub.get(fileName, checksumClient, login, password);
-		 	System.out.println("Le Serveur a fini de transmettre la réponse");
-		 }
-		 catch (RemoteException e) {
+			 System.out.println("Le client a lancé la requête.");
+			 file = localServerStub.get(fileName, checksumClient, login, password);
+			 System.out.println("Le Serveur a fini de transmettre la réponse");
+			 File filePath = new File(fileName);
+			 if (!filePath.exists()) {
+				 try {
+					 filePath.createNewFile();
+				 }catch (IOException e) {
+					 e.printStackTrace();
+				 }
+			 }
+			 try {
+	    			FileWriter fw = new FileWriter(filePath);
+	    			fw.write(file);
+	    			fw.close();
+	    			System.out.println("Le fichier " + fileName + " a été mis à jour sur le client");
+				 } catch (Exception e) {
+	    			System.err.println("Erreur: " + e.getMessage());
+				 }
+		 }catch (RemoteException e) {
             		System.out.println("Erreur: " + e.getMessage());
-         	}
-        	return file;
+		 }
 	 }
 	
 	/*
