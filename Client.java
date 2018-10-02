@@ -22,11 +22,8 @@ public class Client {
 	private String argument3 = null;
 	private String argument4 = null;
 	
-	public static void main(String[] args) {
-		localServer = new Server();
-		localServerStub = loadServerStub("127.0.0.1");
-		distantServer = new AuthServer();
-		distantServerStub = loadAuthStub("132.207.12.243");
+	public void main(String[] args) {
+		
 		if (args.length > 0) {
 			methodeExec = args[0];
 			while (i < args.length ) {
@@ -51,9 +48,7 @@ public class Client {
 		if (System.getSecurityManager() == null) {
 			System.setSecurityManager(new SecurityManager());
 		}
-		localServer = new Server();
 		localServerStub = loadServerStub("127.0.0.1");
-		distantServer = new AuthServer();
 		distantServerStub = loadAuthStub("132.207.12.243");
 	}
 
@@ -174,7 +169,7 @@ public class Client {
 	 */
 	 private ArrayList<String> list(String login, String password) {
 		 System.out.println("Le client a lancé la requête.");
-		 distantServerStub.list(login, password);
+		 return distantServerStub.list(login, password);
 		 System.out.println("Le Serveur a fini de transmettre la réponse");
 	 }
 
