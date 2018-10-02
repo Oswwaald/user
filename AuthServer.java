@@ -90,7 +90,7 @@ public class AuthServer implements AuthInterface {
 			    	loginAccepted = true;
 		        }
 			    else {      
-			    	System.err.println("Mauvais mot de passe");;
+			    	System.err.println("Mauvais mot de passe");
 			    }
 		     }
 		     else {
