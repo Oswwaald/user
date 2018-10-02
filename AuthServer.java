@@ -85,4 +85,32 @@ public class AuthServer implements AuthInterface {
 		}
 		
 	}
+	//VERSION 2 ?
+	public void newUser(String login, String password) {
+		try {
+			BufferedReader br = new BufferedReader(new FileReader(connexionFile));
+			BufferedWriter bw = new BufferedWriter(new FileWriter(connexionFile));
+			bw.write(br + login + " " + password + sautLigne);
+			bw.close();
+		} catch (Exception e) {
+			System.err.println("Erreur: " + e.getMessage());
+		}
+	}
+	
+	
+	public boolean verify(String login, String password) {
+		BufferedReader br = new BufferedReader (new FileReader (connexionFile));
+		String line;
+
+		while( (line = br.readLine() ) != null) {
+		    System.out.printf(line);
+		    if {line == login + " " + password + sautLigne)
+				return true;
+			}
+			else {
+				return false;
+			}
+    
+		}		
+	}
 }
