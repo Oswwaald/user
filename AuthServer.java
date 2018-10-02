@@ -12,7 +12,7 @@ import ca.polymtl.inf8480.tp1.shared.AuthInterface;
 
 public class AuthServer implements AuthInterface {
 	
-	private static File connexionFile = new File("connexion.dat");
+	private static File connexionFile = new File("connexion.txt");
 	
 	/*
 	 * Permet de créer le fichier connexion.txt qui va contenir les identifiants et les mots de passe.
@@ -69,6 +69,14 @@ public class AuthServer implements AuthInterface {
 		} catch (Exception e) {
 			System.err.println("Erreur: " + e.getMessage());
 		}
+		try(FileWriter fw = new FileWriter("connexion.txt", true);
+    		BufferedWriter bw = new BufferedWriter(fw);
+    		PrintWriter out = new PrintWriter(bw))
+		{
+    			out.println(login + " " + password + "\n");
+		} catch (IOException e) {
+			System.err.println("Erreur: " + e.getMessage());
+		}
 	}
 	
 	/*
@@ -85,19 +93,7 @@ public class AuthServer implements AuthInterface {
 		}
 		
 	}
-	//VERSION 2 ?
-	public void newUser(String login, String password) {
-		try {
-			BufferedReader br = new BufferedReader(new FileReader(connexionFile));
-			BufferedWriter bw = new BufferedWriter(new FileWriter(connexionFile));
-			bw.write(br + login + " " + password + sautLigne);
-			bw.close();
-		} catch (Exception e) {
-			System.err.println("Erreur: " + e.getMessage());
-		}
-	}
-	
-	
+		
 	public boolean verify(String login, String password) {
 		BufferedReader br = new BufferedReader (new FileReader (connexionFile));
 		String line;
