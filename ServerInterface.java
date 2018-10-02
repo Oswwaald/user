@@ -2,7 +2,6 @@ package ca.polymtl.inf8480.tp1.shared;
 
 import java.rmi.Remote;
 import java.rmi.RemoteException;
-import java.util.ArrayList;
 
 /*
  * Permet de construire l'interface accédant aux méthodes partagées par le Serveur.
