@@ -17,8 +17,7 @@ public class Client {
 	
 	public void main(String[] args) {
 		int i = 1;
-		if (args.length > 0) 
-		{
+		if (args.length > 0) {
 			methodeExec = args[0];
 			while (i < args.length ) 
 			{
@@ -49,6 +48,7 @@ public class Client {
 
 	/*
 	 * Permet de lancer les différentes exécutions de requêtes apportées par le Client.
+	 * On retrouve ici la méthode partagée par le Seuveur d'authentification et les 6 méthodes partagées par le Serveur de fichiers.
 	 */
 	private void run() {
 		if (methodeExec == "newUser") {
@@ -116,6 +116,7 @@ public class Client {
 	
 	/*
 	 * Lancement de la requête newUser du Client avec le Serveur d'authentification.
+	 * On récupère les états de la requête à titre d'informations sur le suivi de la demande (Optionnel).
 	 */
 	 private void newUser(String login, String password) {
 		 try
@@ -131,6 +132,7 @@ public class Client {
 	 
 	/*
 	 * Lancement de la requête create du Client avec le Serveur de fichiers.
+	 * On récupère les états de la requête à titre d'informations sur le suivi de la demande (Optionnel).
 	 */	 
 	 private void create(String fileName, String login, String password) {
 		 try
@@ -146,6 +148,7 @@ public class Client {
 	 
 	/* 
 	 * Lancement de la requête get du Client avec le Serveur de fichiers.
+	 * On récupère les états de la requête à titre d'informations sur le suivi de la demande (Optionnel).
 	 */	 
 	 private String get(String fileName, String checksumClient, String login, String password) {
 		 String file = null;
@@ -163,6 +166,7 @@ public class Client {
 	
 	/*
 	 * Lancement de la requête push du Client avec le Serveur de fichiers.
+	 * On récupère les états de la requête à titre d'informations sur le suivi de la demande (Optionnel).
 	 */
 	 private void push(String fileName, String content, String login, String password) {
 		 try
@@ -178,6 +182,7 @@ public class Client {
 	 
 	 /*
 	  * Lancement de la requête lock du Client avec le Serveur de fichiers.
+	  * On récupère les états de la requête à titre d'informations sur le suivi de la demande (Optionnel).
 	  */
 	 private void lock(String fileName, String checksumClient, String login, String password) {
 		 try
@@ -193,6 +198,7 @@ public class Client {
 	 
 	/*
 	 * Lancement de la requête list du Client avec le Serveur de fichiers.
+	 * On récupère les états de la requête à titre d'informations sur le suivi de la demande (Optionnel).
 	 */
 	 private ArrayList<String> list(String login, String password) {
 		 ArrayList<String> files = null;
@@ -210,6 +216,7 @@ public class Client {
 
 	/*
 	 * Lancement de la requête syncLocalDirectory du Client avec le Serveur de fichiers.
+	 * On récupère les états de la requête à titre d'informations sur le suivi de la demande (Optionnel).
 	 */
 	 private void syncLocalDirectory(String login, String password) {
 		 try
