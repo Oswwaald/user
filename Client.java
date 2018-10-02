@@ -35,9 +35,9 @@ public class Client {
 	private AuthInterface distantServerStub = null;
 
 	/*
-	 * Permet d'assurer le paramétrage de la connexion avec les différents serveurs.
-	 * Afin de simplifier le paramétrage des serveurs, il a été établi que le serveur de fichiers était local.
-	 * Afin de simplifier le paramétrage des serveurs, il a été établi que le serveur d'authentification était distant.
+	 * Permet d'assurer le parametrage de la connexion avec les differents serveurs.
+	 * Afin de simplifier le parametrage des serveurs, il a ete etabli que le serveur de fichiers etait local.
+	 * Afin de simplifier le parametrage des serveurs, il a ete etabli que le serveur d'authentification etait distant.
 	 */
 	public Client() {
 		super();
@@ -49,8 +49,8 @@ public class Client {
 	}
 
 	/*
-	 * Permet de lancer les différentes exécutions de requêtes apportées par le Client.
-	 * On retrouve ici la méthode partagée par le Seuveur d'authentification et les 6 méthodes partagées par le Serveur de fichiers.
+	 * Permet de lancer les differentes executions de requêtes apportees par le Client.
+	 * On retrouve ici la methode partagee par le Seuveur d'authentification et les 6 methodes partagees par le Serveur de fichiers.
 	 */
 	private void run() {
 		if (methodeExec == "newUser") {
@@ -75,12 +75,12 @@ public class Client {
 			syncLocalDirectory(arguments[0], arguments[1]);
 		}
 		else 
-			System.out.println("La méthode " + methodeExec + " n'existe pas pour le Client...");
+			System.out.println("La methode " + methodeExec + " n'existe pas pour le Client...");
 	}
 
 	/*
-	 * Permet de mettre en place le lien entre le Client et le Registre RMI permettant l'accès des méthodes partagées du Serveur de fichier.
-	 * La méthode prend en compte la création du Stub (relai du coté client) et l'appel de la liste des méthodes dans le Registre RMI.
+	 * Permet de mettre en place le lien entre le Client et le Registre RMI permettant l'accès des methodes partagees du Serveur de fichier.
+	 * La methode prend en compte la creation du Stub (relai du cote client) et l'appel de la liste des methodes dans le Registre RMI.
 	 */	
 	private ServerInterface loadServerStub(String hostname) {
 		ServerInterface stub = null;
@@ -88,7 +88,7 @@ public class Client {
 			Registry registry = LocateRegistry.getRegistry(hostname);
 			stub = (ServerInterface) registry.lookup("fileserver");
 		} catch (NotBoundException e) {
-			System.out.println("Erreur: Le nom '" + e.getMessage() + "' n'est pas défini dans le registre.");
+			System.out.println("Erreur: Le nom '" + e.getMessage() + "' n'est pas defini dans le registre.");
 		} catch (AccessException e) {
 			System.out.println("Erreur: " + e.getMessage());
 		} catch (RemoteException e) {
@@ -98,8 +98,8 @@ public class Client {
 	}
 	
 	/*
-	 * Permet de mettre en place le lien entre le Client et le Registre RMI permettant l'accès des méthodes partagées du Serveur d'authentification.
-	 * La méthode prend en compte la création du Stub (relai du coté client) et l'appel de la liste des méthodes dans le Registre RMI.
+	 * Permet de mettre en place le lien entre le Client et le Registre RMI permettant l'accès des methodes partagees du Serveur d'authentification.
+	 * La methode prend en compte la creation du Stub (relai du cote client) et l'appel de la liste des methodes dans le Registre RMI.
 	 */	
 	private AuthInterface loadAuthStub(String hostname) {
 		AuthInterface stub = null;
@@ -107,7 +107,7 @@ public class Client {
 			Registry registry = LocateRegistry.getRegistry(hostname);
 			stub = (AuthInterface) registry.lookup("authserver");
 		} catch (NotBoundException e) {
-			System.out.println("Erreur: Le nom '" + e.getMessage() + "' n'est pas défini dans le registre.");
+			System.out.println("Erreur: Le nom '" + e.getMessage() + "' n'est pas defini dans le registre.");
 		} catch (AccessException e) {
 			System.out.println("Erreur: " + e.getMessage());
 		} catch (RemoteException e) {
@@ -118,14 +118,14 @@ public class Client {
 	
 	/*
 	 * Lancement de la requête newUser du Client avec le Serveur d'authentification.
-	 * On récupère les états de la requête à titre d'informations sur le suivi de la demande (Optionnel).
+	 * On recupère les etats de la requête à titre d'informations sur le suivi de la demande (Optionnel).
 	 */
 	 private void newUser(String login, String password) {
 		 try
 		 {
-		 	System.out.println("Le client a bien lancé la requête.");
+		 	System.out.println("Le client a bien lance la requête.");
 		 	distantServerStub.newUser(login, password);
-		 	System.out.println("Le Serveur a fini de transmettre la réponse");
+		 	System.out.println("Le Serveur a fini de transmettre la reponse");
 		 } catch (RemoteException e) {
             System.out.println("Erreur: " + e.getMessage());
 		 }
@@ -133,14 +133,14 @@ public class Client {
 	 
 	/*
 	 * Lancement de la requête create du Client avec le Serveur de fichiers.
-	 * On récupère les états de la requête à titre d'informations sur le suivi de la demande (Optionnel).
+	 * On recupère les etats de la requête à titre d'informations sur le suivi de la demande (Optionnel).
 	 */	 
 	 private void create(String fileName, String login, String password) {
 		 try
 		 {
-			System.out.println("Le client a lancé la requête.");
+			System.out.println("Le client a lance la requête.");
 		 	localServerStub.create(fileName, login, password);
-		 	System.out.println("Le Serveur a fini de transmettre la réponse");
+		 	System.out.println("Le Serveur a fini de transmettre la reponse");
 		 } catch (RemoteException e) {
 			 System.out.println("Erreur: " + e.getMessage());
 		 } catch (IOException e) {
@@ -150,15 +150,15 @@ public class Client {
 	 
 	/* 
 	 * Lancement de la requête get du Client avec le Serveur de fichiers.
-	 * On récupère les états de la requête à titre d'informations sur le suivi de la demande (Optionnel).
+	 * On recupère les etats de la requête à titre d'informations sur le suivi de la demande (Optionnel).
 	 */	 
 	 private void get(String fileName, String checksumClient, String login, String password) {
 		 String file = null;
 		 try
 		 {
-			 System.out.println("Le client a lancé la requête.");
+			 System.out.println("Le client a lance la requête.");
 			 file = localServerStub.get(fileName, checksumClient, login, password);
-			 System.out.println("Le Serveur a fini de transmettre la réponse");
+			 System.out.println("Le Serveur a fini de transmettre la reponse");
 			 File filePath = new File(fileName);
 			 if (!filePath.exists()) {
 				 try {
@@ -171,7 +171,18 @@ public class Client {
 	    			FileWriter fw = new FileWriter(filePath);
 	    			fw.write(file);
 	    			fw.close();
-	    			System.out.println("Le fichier " + fileName + " a été mis à jour sur le client");
+	    			System.out.println("Le fichier " + fileName + " a et
+						   
+						   
+						   
+						   
+						   
+						   
+						   
+						   
+						   
+						   
+						   mis à jour sur le client");
 				 } catch (Exception e) {
 	    			System.err.println("Erreur: " + e.getMessage());
 				 }
