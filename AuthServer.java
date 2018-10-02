@@ -21,7 +21,7 @@ public class AuthServer implements AuthInterface {
 	private BufferedReader br;
 	
 	/*
-	 * Permet de créer le fichier connexion.txt qui va contenir les identifiants et les mots de passe des utilisateurs.
+	 * Permet de creer le fichier connexion.txt qui va contenir les identifiants et les mots de passe des utilisateurs.
 	 */
 	public static void main(String[] args) {
 		AuthServer server = new AuthServer();
@@ -40,8 +40,8 @@ public class AuthServer implements AuthInterface {
 	}
 	
 	/*
-	 * Permet de mettre en place le lien entre le Serveur d'Authentification et le Registre RMI permettant l'accès des méthodes partagées au Client et au Serveur.
-	 * La méthode prend en compte la création du Skeleton (relai du coté serveur) et l'enregistrement des méthodes dans le Registre RMI.
+	 * Permet de mettre en place le lien entre le Serveur d'Authentification et le Registre RMI permettant l'acces des methodes partagees au Client et au Serveur.
+	 * La methode prend en compte la creation du Skeleton (relai du cote serveur) et l'enregistrement des methodes dans le Registre RMI.
 	 */
 	private void run() {
 		if (System.getSecurityManager() == null) {
@@ -53,7 +53,7 @@ public class AuthServer implements AuthInterface {
 			registry.rebind("authserver", skeleton);
 			System.out.println("Server d'authentification en marche.");
 		} catch (ConnectException e) {
-			System.err.println("Impossible de se connecter au registre RMI. Est-ce que rmiregistry est lancé ?");
+			System.err.println("Impossible de se connecter au registre RMI. Est-ce que rmiregistry est lance ?");
 			System.err.println();
 			System.err.println("Erreur: " + e.getMessage());
 		} catch (Exception e) {
@@ -62,9 +62,9 @@ public class AuthServer implements AuthInterface {
 	}
 	
 	/*
-	 * La méthode permet de créer un nouvel usager en ajoutant son login et son MDP dans le fichier de connexion.
-	 * La méthode prend en considération le fait de continuer à remplir le fichier et non pas écraser le contenu.
-	 * La méthode prend en considération la création d'une nouvelle ligne à la fin de chaque nouvelle entrée.
+	 * La methode permet de creer un nouvel usager en ajoutant son login et son MDP dans le fichier de connexion.
+	 * La methode prend en consideration le fait de continuer a remplir le fichier et non pas ecraser le contenu.
+	 * La methode prend en consideration la creation d'une nouvelle ligne a la fin de chaque nouvelle entree.
 	 */
 	public void newUser(String login, String password) {
 		try {
@@ -78,8 +78,8 @@ public class AuthServer implements AuthInterface {
 	}
 	
 	/*
-	 * Cette méthode vérifie si un usager possède le login et le password passés en paramètres et retourne un booléen pour valider les informations.
-	 * La méthode renvoie un booléan en sortie.
+	 * Cette methode verifie si un usager possede le login et le password passes en parametres et retourne un booleen pour valider les informations.
+	 * La methode renvoie un booleeean en sortie.
 	 */		
 	public boolean verify(String login, String password) throws IOException {
 		br = new BufferedReader (new FileReader (connexionFile));
