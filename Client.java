@@ -126,9 +126,8 @@ public class Client {
 		 	System.out.println("Le client a bien lancé la requête.");
 		 	distantServerStub.newUser(login, password);
 		 	System.out.println("Le Serveur a fini de transmettre la réponse");
-		 }
-		 catch (RemoteException e) {
-            		System.out.println("Erreur: " + e.getMessage());
+		 } catch (RemoteException e) {
+            System.out.println("Erreur: " + e.getMessage());
 		 }
 	 }
 	 
@@ -176,7 +175,7 @@ public class Client {
 				 } catch (Exception e) {
 	    			System.err.println("Erreur: " + e.getMessage());
 				 }
-		 }catch (RemoteException e) {
+		 } catch (RemoteException e) {
             		System.out.println("Erreur: " + e.getMessage());
 		 } catch (IOException e) {
 			 System.out.println("Erreur: " + e.getMessage());			 
@@ -193,8 +192,7 @@ public class Client {
 		 	System.out.println("Le client a lancé la requête.");
 		 	localServerStub.push(fileName, content, login, password);
 		 	System.out.println("Le Serveur a fini de transmettre la réponse");
-		 }
-		 catch (RemoteException e) {
+		 } catch (RemoteException e) {
             	 System.out.println("Erreur: " + e.getMessage());
 		 } catch (IOException e) {
 			 System.out.println("Erreur: " + e.getMessage());			 
@@ -211,8 +209,7 @@ public class Client {
 		 	System.out.println("Le client a lancé la requête.");
 		 	localServerStub.lock(fileName, checksumClient, login, password);
 		 	System.out.println("Le Serveur a fini de transmettre la réponse");
-		 }
-		 catch (RemoteException e) {
+		 } catch (RemoteException e) {
             	 System.out.println("Erreur: " + e.getMessage());
 		 } catch (IOException e) {
 			 System.out.println("Erreur: " + e.getMessage());			 
@@ -229,8 +226,7 @@ public class Client {
 		 	System.out.println("Le client a lancé la requête.");
 		 	localServerStub.list(login, password);
 		 	System.out.println("Le Serveur a fini de transmettre la réponse");
-		 }
-		 catch (RemoteException e) {
+		 } catch (RemoteException e) {
             	 System.out.println("Erreur: " + e.getMessage());
 		 } catch (IOException e) {
 			 System.out.println("Erreur: " + e.getMessage());			 
@@ -247,8 +243,7 @@ public class Client {
 		 	System.out.println("Le client a lancé la requête.");
 		 	localServerStub.syncLocalDirectory(login, password);
 		 	System.out.println("Le Serveur a fini de transmettre la réponse");
-		 }
-		 catch (RemoteException e) {
+		 } catch (RemoteException e) {
             	 System.out.println("Erreur: " + e.getMessage());
 		 } catch (IOException e) {
 			 System.out.println("Erreur: " + e.getMessage());			 
