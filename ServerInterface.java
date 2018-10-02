@@ -5,14 +5,14 @@ import java.rmi.RemoteException;
 import java.util.ArrayList;
 
 /*
- * Permet de construire l'interface accédant aux méthodes partagées par le Serveur.
- * On retrouve ici les 6 méthodes précisées dans la spécification du partage de fichier.
+ * Permet de construire l'interface accÃ©dant aux mÃ©thodes partagÃ©es par le Serveur.
+ * On retrouve ici les 6 mÃ©thodes prÃ©cisÃ©es dans la spÃ©cification du partage de fichier.
  */
 public interface ServerInterface extends Remote {
 	void create(String fileName, String login, String password) throws RemoteException;
 	String get(String fileName, String checksumClient, String login, String password) throws RemoteException;
 	void push(String fileName, String content, String login, String password) throws RemoteException;
 	void lock(String fileName, String checksumClient, String login, String password) throws RemoteException;
-	ArrayList<String> list(String login, String password) throws RemoteException;
+	String[] list(String login, String password) throws RemoteException;
 	String[] syncLocalDirectory(String login, String password) throws RemoteException;
 }
