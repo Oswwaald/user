@@ -5,8 +5,8 @@ import java.rmi.Remote;
 import java.rmi.RemoteException;
 
 /*
- * Permet de construire l'interface accédant aux méthodes partagées par le Serveur.
- * On retrouve ici les 6 méthodes précisées dans la spécification du partage de fichier.
+ * Permet de construire l interface accedant aux methodes partagees par le Serveur.
+ * On retrouve ici les 6 methodes précisées dans la specification du partage de fichier.
  */
 public interface ServerInterface extends Remote {
 	void create(String fileName, String login, String password) throws RemoteException, IOException;
