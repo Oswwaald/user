@@ -29,19 +29,6 @@ public class Client {
 		Client client = new Client();
 		client.run();
 	}
-	
-	public void main(String[] args) {
-		
-		if (args.length > 0) {
-			methodeExec = args[0];
-			while (i < args.length ) {
-				"argument"+String.valueof(i) = arg[i]; 				
-				i++;
-			}
-		}
-		Client client = new Client();
-		client.run();
-	}
 
 	private ServerInterface localServerStub = null;
 	private AuthInterface distantServerStub = null;
