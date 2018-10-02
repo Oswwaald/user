@@ -13,17 +13,21 @@ import ca.polymtl.inf8480.tp1.shared.AuthInterface;
 public class Client {
 	
 	/*
-	 * Ebauche d'idÃ©e permettant de transmettre les bons arguments aux bonnes fonctions du Client ?! A dÃ©velopper...
+	 * Ebauche d'idée permettant de transmettre les bons arguments aux bonnes fonctions du Client ?! A développer...
 	 */
-	private String[] arguments = new String[4];
+	private int i = 1;
 	private String methodeExec = null;
+	private String argument1 = null;
+	private String argument2 = null;
+	private String argument3 = null;
+	private String argument4 = null;
 	
 	public void main(String[] args) {
-		int i = 1;
+		
 		if (args.length > 0) {
 			methodeExec = args[0];
 			while (i < args.length ) {
-				arguments[i - 1] = args[i]; 							//Pas sur du tout que Ã§a compile Ã§a...
+				"argument"+String.valueof(i) = arg[i]; 							//Pas sur du tout que ça compile ça...
 				i++;
 			}
 		}
@@ -32,13 +36,12 @@ public class Client {
 	}
 
 	private ServerInterface localServerStub = null;
-	private ServerInterface distantServerStub = null;
-	private AuthInterface distantAuthStub = null;
+	private AuthInterface distantServerStub = null;
 
 	/*
-	 * Permet d'assurer le paramÃ©trage de la connexion avec les diffÃ©rents serveurs.
-	 * Afin de simplifier le paramÃ©trage des serveurs, il a Ã©tÃ© Ã©tabli que le serveur de fichiers Ã©tait local.
-	 * Afin de simplifier le paramÃ©trage des serveurs, il a Ã©tÃ© Ã©tabli que le serveur d'authentification Ã©tait distant.
+	 * Permet d'assurer le paramétrage de la connexion avec les différents serveurs.
+	 * Afin de simplifier le paramétrage des serveurs, il a été établi que le serveur de fichiers était local.
+	 * Afin de simplifier le paramétrage des serveurs, il a été établi que le serveur d'authentification était distant.
 	 */
 	public Client() {
 		super();
@@ -46,41 +49,41 @@ public class Client {
 			System.setSecurityManager(new SecurityManager());
 		}
 		localServerStub = loadServerStub("127.0.0.1");
-		distantServerStub = loadServerStub("132.207.12.243");
+		distantServerStub = loadAuthStub("132.207.12.243");
 	}
 
 	/*
-	 * Permet de lancer les diffÃ©rentes exÃ©cutions de requÃªtes apportÃ©es par le Client.
+	 * Permet de lancer les différentes exécutions de requêtes apportées par le Client.
 	 */
 	private void run() {
 		if (methodeExec == "newUser") {
-			newUser(arguments[0], arguments[1]);
+			newUser(argument1, argument2);
 		}
 		else if (methodeExec == "create") {
-			create(arguments[0], arguments[1], arguments[2]);
+			create(argument1, argument2, argument3);
 		}
 		else if (methodeExec == "get") {
-			get(arguments[0], arguments[1], arguments[2], arguments[3]);
+			get(argument1, argument2, argument3, argument4);
 		}
 		else if (methodeExec == "push") {
-			push(arguments[0], arguments[1], arguments[2], arguments[3]);
+			push(argument1, argument2, argument3, argument4);
 		}
 		else if (methodeExec == "lock") {
-			lock(arguments[0], arguments[1], arguments[2], arguments[3]);
+			lock(argument1, argument2, argument3, argument4);
 		}
 		else if (methodeExec == "list") {
-			list(arguments[0], arguments[1]);
+			list(argument1, argument2);
 		}
 		else if (methodeExec == "syncLocalDirectory") {
-			syncLocalDirectory(arguments[0], arguments[1]);
+			syncLocalDirectory(argument1, argument2);
 		}
 		else 
-			System.out.println("La mÃ©thode " + methodeExec + " n'existe pas pour le Client...");
+			System.out.println("La méthode " + methodeExec + " n'existe pas pour le Client...");
 	}
 
 	/*
-	 * Permet de mettre en place le lien entre le Client et le Registre RMI permettant l'accÃ¨s des mÃ©thodes partagÃ©es du Serveur de fichier.
-	 * La mÃ©thode prend en compte la crÃ©ation du Stub (relai du cotÃ© client) et l'appel de la liste des mÃ©thodes dans le Registre RMI.
+	 * Permet de mettre en place le lien entre le Client et le Registre RMI permettant l'accès des méthodes partagées du Serveur de fichier.
+	 * La méthode prend en compte la création du Stub (relai du coté client) et l'appel de la liste des méthodes dans le Registre RMI.
 	 */	
 	private ServerInterface loadServerStub(String hostname) {
 		ServerInterface stub = null;
@@ -88,7 +91,7 @@ public class Client {
 			Registry registry = LocateRegistry.getRegistry(hostname);
 			stub = (ServerInterface) registry.lookup("fileserver");
 		} catch (NotBoundException e) {
-			System.out.println("Erreur: Le nom '" + e.getMessage() + "' n'est pas dÃ©fini dans le registre.");
+			System.out.println("Erreur: Le nom '" + e.getMessage() + "' n'est pas défini dans le registre.");
 		} catch (AccessException e) {
 			System.out.println("Erreur: " + e.getMessage());
 		} catch (RemoteException e) {
@@ -98,8 +101,8 @@ public class Client {
 	}
 	
 	/*
-	 * Permet de mettre en place le lien entre le Client et le Registre RMI permettant l'accÃ¨s des mÃ©thodes partagÃ©es du Serveur d'authentification.
-	 * La mÃ©thode prend en compte la crÃ©ation du Stub (relai du cotÃ© client) et l'appel de la liste des mÃ©thodes dans le Registre RMI.
+	 * Permet de mettre en place le lien entre le Client et le Registre RMI permettant l'accès des méthodes partagées du Serveur d'authentification.
+	 * La méthode prend en compte la création du Stub (relai du coté client) et l'appel de la liste des méthodes dans le Registre RMI.
 	 */	
 	private AuthInterface loadAuthStub(String hostname) {
 		AuthInterface stub = null;
@@ -107,7 +110,7 @@ public class Client {
 			Registry registry = LocateRegistry.getRegistry(hostname);
 			stub = (AuthInterface) registry.lookup("authserver");
 		} catch (NotBoundException e) {
-			System.out.println("Erreur: Le nom '" + e.getMessage() + "' n'est pas dÃ©fini dans le registre.");
+			System.out.println("Erreur: Le nom '" + e.getMessage() + "' n'est pas défini dans le registre.");
 		} catch (AccessException e) {
 			System.out.println("Erreur: " + e.getMessage());
 		} catch (RemoteException e) {
@@ -117,111 +120,65 @@ public class Client {
 	}
 	
 	/*
-	 * Lancement de la requÃªte newUser du Client avec le Serveur d'authentification.
+	 * Lancement de la requête newUser du Client avec le Serveur d'authentification.
 	 */
 	 private void newUser(String login, String password) {
-		 try
-		 {
-		 System.out.println("Le client a bien lancÃ© la requÃªte.");
-		 distantAuthStub.newUser(login, password);
-		 System.out.println("Le Serveur a fini de transmettre la rÃ©ponse");
-		 }
-		 catch (RemoteException e) {
-            System.out.println("Erreur: " + e.getMessage());
-        }
+		 System.out.println("Le client a bien lancé la requête.");
+		 distantServerStub.newUser(login, password);
+		 System.out.println("Le Serveur a fini de transmettre la réponse");
 	 }
 	 
 	/*
-	 * Lancement de la requÃªte create du Client avec le Serveur d'authentification.
+	 * Lancement de la requête newUser du Client avec le Serveur de fichier.
 	 */	 
 	 private void create(String fileName, String login, String password) {
-		 try
-		 {
-		 System.out.println("Le client a lancÃ© la requÃªte.");
-		 distantServerStub.create(fileName, login, password);
-		 System.out.println("Le Serveur a fini de transmettre la rÃ©ponse");
-		 }
-		 catch (RemoteException e) {
-            System.out.println("Erreur: " + e.getMessage());
-        }
+		 System.out.println("Le client a lancé la requête.");
+		 localServerStub.create(fileName, login, password);
+		 System.out.println("Le Serveur a fini de transmettre la réponse");
 	 }
 	 
 	/* 
-	 * Lancement de la requÃªte get du Client avec le Serveur d'authentification.
+	 * Lancement de la requête newUser du Client avec le Serveur de fichier.
 	 */	 
 	 private String get(String fileName, String checksumClient, String login, String password) {
-		 String file = null;
-		 try
-		 {
-		 System.out.println("Le client a lancÃ© la requÃªte.");
-		 file = distantServerStub.get(fileName, checksumClient, login, password);
-		 System.out.println("Le Serveur a fini de transmettre la rÃ©ponse");
-		 }
-		 catch (RemoteException e) {
-            System.out.println("Erreur: " + e.getMessage());
-        }
-        return file;
+		 System.out.println("Le client a lancé la requête.");
+		 localServerStub.get(fileName, checksumClient, login, password);
+		 System.out.println("Le Serveur a fini de transmettre la réponse");
 	 }
 	
 	/*
-	 * Lancement de la requÃªte push du Client avec le Serveur d'authentification.
+	 * Lancement de la requête newUser du Client avec le Serveur de fichier.
 	 */
 	 private void push(String fileName, String content, String login, String password) {
-		 try
-		 {
-		 System.out.println("Le client a lancÃ© la requÃªte.");
-		 distantServerStub.push(fileName, content, login, password);
-		 System.out.println("Le Serveur a fini de transmettre la rÃ©ponse");
-		 }
-		 catch (RemoteException e) {
-            System.out.println("Erreur: " + e.getMessage());
-        }
+		 System.out.println("Le client a lancé la requête.");
+		 localServerStub.push(filename, content, login, password);
+		 System.out.println("Le Serveur a fini de transmettre la réponse");
 	 }
 	 
 	/*
-	 * Lancement de la requÃªte lock du Client avec le Serveur d'authentification.
+	 * Lancement de la requête newUser du Client avec le Serveur de fichier.
 	 */
 	 private void lock(String fileName, String checksumClient, String login, String password) {
-		 try
-		 {
-		 System.out.println("Le client a lancÃ© la requÃªte.");
-		 distantServerStub.lock(fileName, checksumClient, login, password);
-		 System.out.println("Le Serveur a fini de transmettre la rÃ©ponse");
-		 }
-		 catch (RemoteException e) {
-            System.out.println("Erreur: " + e.getMessage());
-        }
+		 System.out.println("Le client a lancé la requête.");
+		 localServerStub.lock(filename, checksumClient, login, password);
+		 System.out.println("Le Serveur a fini de transmettre la réponse");
 	 }
 	 
 	/*
-	 * Lancement de la requÃªte list du Client avec le Serveur d'authentification.
+	 * Lancement de la requête newUser du Client avec le Serveur de fichier.
 	 */
 	 private ArrayList<String> list(String login, String password) {
-		 ArrayList<String> files = null;
-		 try
-		 {
-		 System.out.println("Le client a lancÃ© la requÃªte.");
-		 files = distantServerStub.list(login, password);
-		 System.out.println("Le Serveur a fini de transmettre la rÃ©ponse");
-		 }
-		 catch (RemoteException e) {
-            System.out.println("Erreur: " + e.getMessage());
-        }
-        return files;
+		 System.out.println("Le client a lancé la requête.");
+		 return localServerStub.list(login, password);
+		 System.out.println("Le Serveur a fini de transmettre la réponse");
 	 }
 
 	/*
-	 * Lancement de la requÃªte syncLocalDirectory du Client avec le Serveur d'authentification.
+	 * Lancement de la requête newUser du Client avec le Serveur de fichier.
 	 */
 	 private void syncLocalDirectory(String login, String password) {
-		 try
-		 {
-		 System.out.println("Le client a lancÃ© la requÃªte.");
-		 distantServerStub.syncLocalDirectory(login, password);
-		 System.out.println("Le Serveur a fini de transmettre la rÃ©ponse");
-		 }
-		 catch (RemoteException e) {
-            System.out.println("Erreur: " + e.getMessage());
-        }
+		 System.out.println("Le client a lancé la requête.");
+		 localServerStub.syncLocalDirectory(login, password);
+		 System.out.println("Le Serveur a fini de transmettre la réponse");
 	 }
 }

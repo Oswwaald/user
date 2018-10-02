@@ -7,19 +7,15 @@ import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
-
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.ArrayList;
 
 import javax.xml.bind.DatatypeConverter;
 
 import java.io.BufferedInputStream;
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.StringWriter;
@@ -30,7 +26,8 @@ import ca.polymtl.inf8480.tp1.shared.AuthInterface;
 
 public class Server implements ServerInterface {
 
-	Map<String,String> fileLocks = new HashMap();
+	Map<String,String> fileLocks = new HashMap<String, String>();
+	private AuthInterface distantServerStub = null;
 	
 	public static void main(String[] args) {
 		Server server = new Server();
@@ -40,11 +37,12 @@ public class Server implements ServerInterface {
 
 	public Server() {
 		super();
+		distantServerStub = loadAuthStub("132.207.12.243");
 	}
 
 	/*
-	 * Permet de mettre en place le lien entre le Serveur et le Registre RMI permettant l'acc√®s des m√©thodes partag√©es au Client.
-	 * La m√©thode prend en compte la cr√©ation du Skeleton (relai du cot√© serveur) et l'enregistrement des m√©thodes dans le Registre RMI.
+	 * Permet de mettre en place le lien entre le Serveur et le Registre RMI permettant l'accËs des mÈthodes partagÈes au Client.
+	 * La mÈthode prend en compte la crÈation du Skeleton (relai du cotÈ serveur) et l'enregistrement des mÈthodes dans le Registre RMI.
 	 */
 	private void run() {
 		if (System.getSecurityManager() == null) {
@@ -56,7 +54,7 @@ public class Server implements ServerInterface {
 			registry.rebind("fileserver", skeleton);
 			System.out.println("Serveur de fichiers en marche.");
 		} catch (ConnectException e) {
-			System.err.println("Impossible de se connecter au registre RMI. Est-ce que rmiregistry est lanc√É¬© ?");
+			System.err.println("Impossible de se connecter au registre RMI. Est-ce que rmiregistry est lanc√© ?");
 			System.err.println();
 			System.err.println("Erreur: " + e.getMessage());
 		} catch (Exception e) {
@@ -65,8 +63,8 @@ public class Server implements ServerInterface {
 	}
 	
 	/*
-	 * Permet de mettre en place le lien entre le Serveur et le Registre RMI permettant l'acc√®s des m√©thodes partag√©es du Serveur d'authentification.
-	 * La m√©thode prend en compte la cr√©ation du Stub (relai du cot√© client [ici Server est le client de AuthServer]) et l'appel de la liste des m√©thodes dans le Registre RMI.
+	 * Permet de mettre en place le lien entre le Serveur et le Registre RMI permettant l'accËs des mÈthodes partagÈes du Serveur d'authentification.
+	 * La mÈthode prend en compte la crÈation du Stub (relai du cotÈ client [ici Server est le client de AuthServer]) et l'appel de la liste des mÈthodes dans le Registre RMI.
 	 */	
 	private AuthInterface loadAuthStub(String hostname) {
 		AuthInterface stub = null;
@@ -74,7 +72,7 @@ public class Server implements ServerInterface {
 			Registry registry = LocateRegistry.getRegistry(hostname);
 			stub = (AuthInterface) registry.lookup("authserver");
 		} catch (NotBoundException e) {
-			System.out.println("Erreur: Le nom '" + e.getMessage() + "' n'est pas d√©fini dans le registre.");
+			System.out.println("Erreur: Le nom '" + e.getMessage() + "' n'est pas dÈfini dans le registre.");
 		} catch (AccessException e) {
 			System.out.println("Erreur: " + e.getMessage());
 		} catch (RemoteException e) {
@@ -84,21 +82,20 @@ public class Server implements ServerInterface {
 	}
 	
 	/*
-	 * Permet de cr√©er un fichier vide sur le serveur.
-	 * On v√©rifie la l√©gitimit√© du client.
-	 * La m√©thode prend en charge le fait que le nom de fichier est d√©j√† utilis√©.
+	 * Permet de crÈer un fichier vide sur le serveur.
+	 * On vÈrifie la lÈgitimitÈ du client.
+	 * La mÈthode prend en charge le fait que le nom de fichier est dÈj‡ utilisÈ.
 	 */
-	public void create(String fileName, String login, String password) 
-	throws RemoteException {
+	public void create(String fileName, String login, String password) throws RemoteException {
 		if (verify(login, password)) {
-			File f = new File("fichiers/" + fileName);
-			if (f.exists() && !f.isDirectory()) {
-				System.out.println("Le fichier" + fileName + "existe d√©j√†");
+			File filePath = new File("fichiers/" + fileName);
+			if (filePath.exists() && !filePath.isDirectory()) {
+				System.out.println("Le fichier" + fileName + "existe dÈj‡");
 			}
 			else {
 				try {
-					f.createNewFile();
-					System.out.println("Le fichier " + fileName + " a √©t√© cr√©√© avec succ√®s");
+					filePath.createNewFile();
+					System.out.println("Le fichier " + fileName + " a ÈtÈ crÈÈ avec succËs");
 				} catch (Exception e) {
 					System.err.println("Erreur: " + e.getMessage());
 				}
@@ -109,13 +106,12 @@ public class Server implements ServerInterface {
 	}
 	
 	/*
-	 * Permet de r√©cup√©rer le contenu du fichier partag√© sur le serveur en fonction de sa version (par le checkum).
-	 * On v√©rifie la l√©gitimit√© du client.
-	 * La m√©thode prend en consid√©ration l'absence de fichier.
-	 * La m√©thode prend en consid√©ration le cas o√π le fichier sur le serveur poss√®de le m√™me checksum que le fichier du client.
+	 * Permet de rÈcupÈrer le contenu du fichier partagÈ sur le serveur en fonction de sa version (par le checkum).
+	 * On vÈrifie la lÈgitimitÈ du client.
+	 * La mÈthode prend en considÈration l'absence de fichier.
+	 * La mÈthode prend en considÈration le cas o˘ le fichier sur le serveur possËde le mÍme checksum que le fichier du client.
 	 */
-	public String get(String fileName, String checksumClient, String login, String password) 
-	throws RemoteException {
+	public String get(String fileName, String checksumClient, String login, String password) throws RemoteException {
 		if (verify(login, password)) {
 			File fileToGet = new File("fichiers/" + fileName);
 			if (fileToGet.exists()) {
@@ -136,7 +132,7 @@ public class Server implements ServerInterface {
 						return sortie.toString();	
 					}
 					else
-						System.out.println("Le fichier " + fileName + " est d√©j√† √† jour");
+						System.out.println("Le fichier " + fileName + " est dÈj‡ ‡ jour");
 				}catch (IOException e) {
 					System.out.println("Erreur: " + e.getMessage());
 				}catch (NoSuchAlgorithmException e) {
@@ -153,29 +149,28 @@ public class Server implements ServerInterface {
     }
 	
 	/*
-	 * Permet au Client de mettre √† jour un fichier sur le serveur en envoyant directement le contenu au Serveur.
-	 * On v√©rifie la l√©gitimit√© du client.
-	 * La m√©thode prend en compte le fait que le Client ne soit pas le propri√©taire d'√©criture du fichier.
-	 * La m√©thode prend en compte le fait que le fichier ne soit pas pr√©alablement "lock√©" par le Client.
+	 * Permet au Client de mettre ‡ jour un fichier sur le serveur en envoyant directement le contenu au Serveur.
+	 * On vÈrifie la lÈgitimitÈ du client.
+	 * La mÈthode prend en compte le fait que le Client ne soit pas le propriÈtaire d'Ècriture du fichier.
+	 * La mÈthode prend en compte le fait que le fichier ne soit pas prÈalablement "lockÈ" par le Client.
 	 */
-    public void push(String fileName, String content, String login, String password) 
-    throws RemoteException {
+    public void push(String fileName, String content, String login, String password) throws RemoteException {
     	if (verify(login, password)) {
     		String lockOwner = (String)fileLocks.get(fileName);
     		if (lockOwner.equals(login)) {
     			try {
-    				File fileToOverwrite = new File("fichiers/" + fileName);
+    				File fileToOverwrite = new File(fileName);
     				FileWriter fw = new FileWriter(fileToOverwrite);
     				fw.write(content);
     				fw.close();
     				fileLocks.remove(fileName);
-    				System.out.println("Le fichier " + fileName + " a √©t√© mis √† jour sur le serveur");
+    				System.out.println("Le fichier " + fileName + " a ÈtÈ mis ‡ jour sur le serveur");
     			} catch (Exception e) {
     				System.err.println("Erreur: " + e.getMessage());
     			}
 			}
     		else if (!lockOwner.equals(login)) {
-    			System.out.println("Ce fichier est v√©rouill√© par l'utilisateur " + lockOwner);
+    			System.out.println("Ce fichier est vÈrouillÈ par l'utilisateur " + lockOwner);
     		}
     		else {
     			System.out.println("Veuillez verrouiller le fichier avant de le pousser");
@@ -186,22 +181,20 @@ public class Server implements ServerInterface {
     }
     
     /*
-     * Permet de v√©rouiller un fichier le temps qu'un client le modifie et le mette √† jour. 
-     * On v√©rifie la l√©gitimit√© du client.
-     * A la suite du v√©rouillage, le client obtient l'information du propri√©taire.
-     * La m√©thode prend en consid√©ration l'absence de fichier.
+     * Permet de vÈrouiller un fichier le temps qu'un client le modifie et le mette ‡ jour. 
+     * On vÈrifie la lÈgitimitÈ du client.
+     * A la suite du vÈrouillage, le client obtient l'information du propriÈtaire.
+     * La mÈthode prend en considÈration l'absence de fichier.
      */
-    public void lock(String fileName, String checksumClient, String login, String password)
-    throws RemoteException {
+    public void lock(String fileName, String checksumClient, String login, String password) throws RemoteException {
     	if (verify(login, password)) {
-			String filePath = "fichiers/" + fileName;
-			File f = new File(filePath);
-			if (f.exists()) {	
+			File filePath = new File(fileName);
+			if (filePath.exists() && !filePath.isDirectory()) {	
 				String fileLockOwner = (String)fileLocks.putIfAbsent(fileName, login);
 				if (fileLockOwner == null) {
 					get(fileName, checksumClient, login, password);
 				}
-				System.out.println("L'utilisateur " + fileLockOwner + "d√©tient le verrou pour le fichier " + fileName);
+				System.out.println("L'utilisateur " + fileLockOwner + "dÈtient le verrou pour le fichier " + fileName);
 			}
 			else {
 				System.out.println("Aucun fichier " + fileName + " sur le serveur");
@@ -212,15 +205,14 @@ public class Server implements ServerInterface {
     }
     
     /*
-     * Permet au Client de pour r√©cup√©rer la liste des fichiers pr√©sents dans le dossier.
-     * On v√©rifie la l√©gitimit√© du client.
-     * La liste comporte un identifiant de fichier, le nom de fichier et le nom du propri√©taire (si applicable).
+     * Permet au Client de pour rÈcupÈrer la liste des fichiers prÈsents dans le dossier.
+     * On vÈrifie la lÈgitimitÈ du client.
+     * La liste comporte un identifiant de fichier, le nom de fichier et le nom du propriÈtaire (si applicable).
      */
-    public ArrayList<String> list(String login, String password)
-    throws RemoteException {
-		ArrayList<String> fileList = new ArrayList();
+    public String[] list(String login, String password) throws RemoteException {
     	if (verify(login, password)) {
     		try {
+    			String[] fileList = null;
     			File repertory = new File("fichiers/");
     			String files[] = repertory.list();
     			if ((files != null) && (files.length > 0)) {
@@ -229,44 +221,44 @@ public class Server implements ServerInterface {
     					fileList.add(i + ": " + files[i] + " " + fileLockOwner);
     				}	
     			} 
+    			return fileList;
     		} catch (Exception e) {
     				System.err.println("Erreur: " + e.getMessage());
     		}
 		}
 		else
 			System.out.println("Mauvaises informations de connexion.");
-	    return fileList;
+    	return null;
 	}
 	
     /*
-     * Permet au Client de pouvoir r√©cup√©rer (synchroniser) tous les fichiers pr√©sents sur le serveur.
-     * On v√©rifie la l√©gitimit√© du client.
-     * Si l'existance du dossier avec plus d'un fichier est v√©rifi√©e, on applique la m√©thode get pour r√©cup√©rer le contenu.
+     * Permet au Client de pouvoir rÈcupÈrer (synchroniser) tous les fichiers prÈsents sur le serveur.
+     * On vÈrifie la lÈgitimitÈ du client.
+     * Si l'existance du dossier avec plus d'un fichier est vÈrifiÈe, on applique la mÈthode get pour rÈcupÈrer le contenu.
      */
-	public ArrayList<String> syncLocalDirectory(String login, String password)
-	throws RemoteException {
-		ArrayList<String> syncedFiles = new ArrayList<String>();
+	public String[] syncLocalDirectory(String login, String password) throws RemoteException {
+		String insertion[];
 		if (verify(login, password)) {
+			
 			File repertory = new File("fichiers/");
 			String files[] = repertory.list();
 			if ((files != null) && (files.length > 0)) {
 				for (int i = 0; i < files.length; i++) {	    
-					 syncedFiles.add(get(files[i], null, login, password));
+					 insertion[i] = get(files[i], null, login, password);
 				}
 			}
 		}
 		else
 			System.out.println("Mauvaises informations de connexion.");
-		return syncedFiles;	
+		return insertion;
 	}
 	
 	/*
-	 * Permet de v√©rifier les identifiants de connexion avec le serveur d'authentification.
+	 * Lancement de la requÍte verify du Serveur de fichier avec le Serveur d'authentification .
 	 */
-	private boolean verify(String login, String password)
-	throws RemoteException {
-		return true;
+	private boolean verify(String login, String password) throws RemoteException {
+		return distantServerStub.verify(login, password);
 	}
-	
-
 }
+  
+

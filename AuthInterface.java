@@ -4,8 +4,8 @@ import java.rmi.Remote;
 import java.rmi.RemoteException;
 
 /*
- * Permet de construire l'interface accÃ©dant aux mÃ©thodes partagÃ©es par le Serveur d'Authentification.
- * On retrouve ici les 2 mÃ©thodes prÃ©cisÃ©es dans la spÃ©cification de l'authentification.
+ * Permet de construire l'interface accédant aux méthodes partagées par le Serveur d'Authentification.
+ * On retrouve ici les 2 méthodes précisées dans la spécification de l'authentification.
  */
 public interface AuthInterface extends Remote {
 	void newUser(String login, String password) throws RemoteException;
