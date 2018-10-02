@@ -1,7 +1,12 @@
 package ca.polymtl.inf8480.tp1.server;
 
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileReader;
 import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.rmi.ConnectException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
@@ -13,9 +18,10 @@ import ca.polymtl.inf8480.tp1.shared.AuthInterface;
 public class AuthServer implements AuthInterface {
 	
 	private static File connexionFile = new File("connexion.txt");
+	private PrintWriter out;
 	
 	/*
-	 * Permet de créer le fichier connexion.txt qui va contenir les identifiants et les mots de passe.
+	 * Permet de créer le fichier connexion.txt qui va contenir les identifiants et les mots de passe des utilisateurs.
 	 */
 	public static void main(String[] args) {
 		AuthServer server = new AuthServer();
@@ -32,8 +38,6 @@ public class AuthServer implements AuthInterface {
 	public AuthServer() {
 		super();
 	}
-
-	
 	
 	/*
 	 * Permet de mettre en place le lien entre le Serveur d'Authentification et le Registre RMI permettant l'accès des méthodes partagées au Client et au Serveur.
@@ -61,45 +65,38 @@ public class AuthServer implements AuthInterface {
 	 * La méthode permet de créer un nouvel usager en ajoutant son login et son MDP dans le fichier de connexion.
 	 */
 	public void newUser(String login, String password) {
-		try(FileWriter fw = new FileWriter("connexion.txt", true);
+		try {
+			FileWriter fw = new FileWriter("connexion.txt", true);
     		BufferedWriter bw = new BufferedWriter(fw);
-    		PrintWriter out = new PrintWriter(bw))
-		{
-    			out.println(login + " " + password + "\n");
+    		out = new PrintWriter(bw);
+    		out.println(login + " " + password + "\n");
 		} catch (IOException e) {
 			System.err.println("Erreur: " + e.getMessage());
 		}
 	}
 	
 	/*
-	 * Cette méthode vérifie si un usager possède le login et le password passés en paramètres 
-	 * et retourne un booléen pour valider les informations
+	 * Cette méthode vérifie si un usager possède le login et le password passés en paramètres et retourne un booléen pour valider les informations.
 	 */		
 	public boolean verify(String login, String password) {
 		BufferedReader br = new BufferedReader (new FileReader (connexionFile));
 		String line;
-
 		while( (line = br.readLine() ) != null) 
 		{		
-		    String[] parts = string.split(" ");
-		    if (parts[0] == login)
-		    {
-			    if (parts[1] == password)
-			    {    
-				return true;
-		            }
-			    else
-			    {      
-				System.err.println("Mauvais mot de passe");
+		    String[] parts = String.split(" ");
+		    if (parts[0] == login){
+			    if (parts[1] == password){    
+			    	return true;
+		        }
+			    else {      
+			    	System.err.println("Mauvais mot de passe");
 				return false;
 			    }
 		     }
-		     else 
-		     {
-			System.err.println("L'utilisateur n'existe pas");
-			return false;
+		     else {
+		    	 System.err.println("L'utilisateur n'existe pas");
+		    	 return false;
 		     }
-    
 		 }		
 	}
 }
