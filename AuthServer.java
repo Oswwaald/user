@@ -61,14 +61,6 @@ public class AuthServer implements AuthInterface {
 	 * La méthode permet de créer un nouvel usager en ajoutant son login et son MDP dans le fichier de connexion.
 	 */
 	public void newUser(String login, String password) {
-		try {
-			File fileToOverwrite = connexionFile;
-			FileWriter fw = new FileWriter(fileToOverwrite);
-			fw.write(content);
-			fw.close();
-		} catch (Exception e) {
-			System.err.println("Erreur: " + e.getMessage());
-		}
 		try(FileWriter fw = new FileWriter("connexion.txt", true);
     		BufferedWriter bw = new BufferedWriter(fw);
     		PrintWriter out = new PrintWriter(bw))
@@ -82,31 +74,32 @@ public class AuthServer implements AuthInterface {
 	/*
 	 * Cette méthode vérifie si un usager possède le login et le password passés en paramètres 
 	 * et retourne un booléen pour valider les informations
-	 */
-	public boolean verify(String login, String password) {
-		if {
-			
-			return true;
-		}
-		else {
-			return false;
-		}
-		
-	}
-		
+	 */		
 	public boolean verify(String login, String password) {
 		BufferedReader br = new BufferedReader (new FileReader (connexionFile));
 		String line;
 
-		while( (line = br.readLine() ) != null) {
-		    System.out.printf(line);
-		    if {line == login + " " + password + sautLigne)
+		while( (line = br.readLine() ) != null) 
+		{		
+		    String[] parts = string.split(" ");
+		    if (parts[0] == login)
+		    {
+			    if (parts[1] == password)
+			    {    
 				return true;
-			}
-			else {
+		            }
+			    else
+			    {      
+				System.err.println("Mauvais mot de passe");
 				return false;
-			}
+			    }
+		     }
+		     else 
+		     {
+			System.err.println("L'utilisateur n'existe pas");
+			return false;
+		     }
     
-		}		
+		 }		
 	}
 }
