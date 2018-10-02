@@ -15,7 +15,7 @@ public class AuthServer implements AuthInterface {
 	private static File connexionFile = new File("connexion.dat");
 	
 	/*
-	 * Permet de crÈer le fichier connexion.txt qui va contenir les identifiants et les mots de passe.
+	 * Permet de cr√©er le fichier connexion.txt qui va contenir les identifiants et les mots de passe.
 	 */
 	public static void main(String[] args) {
 		AuthServer server = new AuthServer();
@@ -36,8 +36,8 @@ public class AuthServer implements AuthInterface {
 	
 	
 	/*
-	 * Permet de mettre en place le lien entre le Serveur d'Authentification et le Registre RMI permettant l'accËs des mÈthodes partagÈes au Client et au Serveur.
-	 * La mÈthode prend en compte la crÈation du Skeleton (relai du cotÈ serveur) et l'enregistrement des mÈthodes dans le Registre RMI.
+	 * Permet de mettre en place le lien entre le Serveur d'Authentification et le Registre RMI permettant l'acc√®s des m√©thodes partag√©es au Client et au Serveur.
+	 * La m√©thode prend en compte la cr√©ation du Skeleton (relai du cot√© serveur) et l'enregistrement des m√©thodes dans le Registre RMI.
 	 */
 	private void run() {
 		if (System.getSecurityManager() == null) {
@@ -49,7 +49,7 @@ public class AuthServer implements AuthInterface {
 			registry.rebind("authserver", skeleton);
 			System.out.println("Server d'authentification en marche.");
 		} catch (ConnectException e) {
-			System.err.println("Impossible de se connecter au registre RMI. Est-ce que rmiregistry est lancÈ ?");
+			System.err.println("Impossible de se connecter au registre RMI. Est-ce que rmiregistry est lanc√© ?");
 			System.err.println();
 			System.err.println("Erreur: " + e.getMessage());
 		} catch (Exception e) {
@@ -57,6 +57,9 @@ public class AuthServer implements AuthInterface {
 		}
 	}
 	
+	/*
+	 * La m√©thode permet de cr√©er un nouvel usager en ajoutant son login et son MDP dans le fichier de connexion.
+	 */
 	public void newUser(String login, String password) {
 		try {
 			File fileToOverwrite = connexionFile;
@@ -68,7 +71,10 @@ public class AuthServer implements AuthInterface {
 		}
 	}
 	
-	
+	/*
+	 * Cette m√©thode v√©rifie si un usager poss√®de le login et le password pass√©s en param√®tres 
+	 * et retourne un bool√©en pour valider les informations
+	 */
 	public boolean verify(String login, String password) {
 		if {
 			
