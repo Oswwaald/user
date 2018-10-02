@@ -121,7 +121,7 @@ public class Client {
 		 try
 		 {
 		 	System.out.println("Le client a bien lancé la requête.");
-		 	distantAuthStub.newUser(login, password);
+		 	distantServerStub.newUser(login, password);
 		 	System.out.println("Le Serveur a fini de transmettre la réponse");
 		 }
 		 catch (RemoteException e) {
@@ -130,13 +130,13 @@ public class Client {
 	 }
 	 
 	/*
-	 * Lancement de la requête create du Client avec le Serveur d'authentification.
+	 * Lancement de la requête create du Client avec le Serveur de fichiers.
 	 */	 
 	 private void create(String fileName, String login, String password) {
 		 try
 		 {
 		 	System.out.println("Le client a lancé la requête.");
-		 	distantServerStub.create(fileName, login, password);
+		 	localServerStub.create(fileName, login, password);
 		 	System.out.println("Le Serveur a fini de transmettre la réponse");
 		 }
 		 catch (RemoteException e) {
@@ -145,14 +145,14 @@ public class Client {
 	 }
 	 
 	/* 
-	 * Lancement de la requête get du Client avec le Serveur d'authentification.
+	 * Lancement de la requête get du Client avec le Serveur de fichiers.
 	 */	 
 	 private String get(String fileName, String checksumClient, String login, String password) {
 		 String file = null;
 		 try
 		 {
 		 	System.out.println("Le client a lancé la requête.");
-		 	file = distantServerStub.get(fileName, checksumClient, login, password);
+		 	file = localServerStub.get(fileName, checksumClient, login, password);
 		 	System.out.println("Le Serveur a fini de transmettre la réponse");
 		 }
 		 catch (RemoteException e) {
@@ -162,13 +162,13 @@ public class Client {
 	 }
 	
 	/*
-	 * Lancement de la requête push du Client avec le Serveur d'authentification.
+	 * Lancement de la requête push du Client avec le Serveur de fichiers.
 	 */
 	 private void push(String fileName, String content, String login, String password) {
 		 try
 		 {
 		 	System.out.println("Le client a lancé la requête.");
-		 	distantServerStub.push(fileName, content, login, password);
+		 	localServerStub.push(fileName, content, login, password);
 		 	System.out.println("Le Serveur a fini de transmettre la réponse");
 		 }
 		 catch (RemoteException e) {
@@ -176,14 +176,14 @@ public class Client {
         	 }
 	 }
 	 
-/*
-	 * Lancement de la requête lock du Client avec le Serveur d'authentification.
-	 */
+	 /*
+	  * Lancement de la requête lock du Client avec le Serveur de fichiers.
+	  */
 	 private void lock(String fileName, String checksumClient, String login, String password) {
 		 try
 		 {
 		 	System.out.println("Le client a lancé la requête.");
-		 	distantServerStub.lock(fileName, checksumClient, login, password);
+		 	localServerStub.lock(fileName, checksumClient, login, password);
 		 	System.out.println("Le Serveur a fini de transmettre la réponse");
 		 }
 		 catch (RemoteException e) {
@@ -192,14 +192,14 @@ public class Client {
 	 }
 	 
 	/*
-	 * Lancement de la requête list du Client avec le Serveur d'authentification.
+	 * Lancement de la requête list du Client avec le Serveur de fichiers.
 	 */
 	 private ArrayList<String> list(String login, String password) {
 		 ArrayList<String> files = null;
 		 try
 		 {
 		 	System.out.println("Le client a lancé la requête.");
-		 	files = distantServerStub.list(login, password);
+		 	files = localServerStub.list(login, password);
 		 	System.out.println("Le Serveur a fini de transmettre la réponse");
 		 }
 		 catch (RemoteException e) {
@@ -209,16 +209,13 @@ public class Client {
 	 }
 
 	/*
-	 * Lancement de la requête newUser du Client avec le Serveur de fichier.
-	 */
-	/*
-	 * Lancement de la requête syncLocalDirectory du Client avec le Serveur d'authentification.
+	 * Lancement de la requête syncLocalDirectory du Client avec le Serveur de fichiers.
 	 */
 	 private void syncLocalDirectory(String login, String password) {
 		 try
 		 {
 		 	System.out.println("Le client a lancé la requête.");
-		 	distantServerStub.syncLocalDirectory(login, password);
+		 	localServerStub.syncLocalDirectory(login, password);
 		 	System.out.println("Le Serveur a fini de transmettre la réponse");
 		 }
 		 catch (RemoteException e) {
