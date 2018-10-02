@@ -8,7 +8,6 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.rmi.ConnectException;
-import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
@@ -19,6 +18,7 @@ public class AuthServer implements AuthInterface {
 	
 	private static File connexionFile = new File("connexion.txt");
 	private PrintWriter out;
+	private BufferedReader br;
 	
 	/*
 	 * Permet de créer le fichier connexion.txt qui va contenir les identifiants et les mots de passe des utilisateurs.
@@ -63,6 +63,8 @@ public class AuthServer implements AuthInterface {
 	
 	/*
 	 * La méthode permet de créer un nouvel usager en ajoutant son login et son MDP dans le fichier de connexion.
+	 * La méthode prend en considération le fait de continuer à remplir le fichier et non pas écraser le contenu.
+	 * La méthode prend en considération la création d'une nouvelle ligne à la fin de chaque nouvelle entrée.
 	 */
 	public void newUser(String login, String password) {
 		try {
@@ -77,14 +79,15 @@ public class AuthServer implements AuthInterface {
 	
 	/*
 	 * Cette méthode vérifie si un usager possède le login et le password passés en paramètres et retourne un booléen pour valider les informations.
+	 * La méthode renvoie un booléan en sortie.
 	 */		
-	public boolean verify(String login, String password) {
-		BufferedReader br = new BufferedReader (new FileReader (connexionFile));
+	public boolean verify(String login, String password) throws IOException {
+		br = new BufferedReader (new FileReader (connexionFile));
 		String line;
-		bool loginAccepted = false;
+		boolean loginAccepted = false;
 		while( (line = br.readLine() ) != null) 
 		{		
-		    String[] parts = String.split(" ");
+		    String[] parts = line.split(" ");
 		    if (parts[0] == login){
 			    if (parts[1] == password){    
 			    	loginAccepted = true;
